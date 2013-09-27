@@ -144,6 +144,8 @@ accessToken=2YotnFZFEjr1zCsicMWpAA
 
 Check whether a given API key is valid.
 
+**Note:** no value is returned for 'expires', since Api Keys don't expire.
+
 POST /rest/v2/auth/validate
 > Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 > Content-Type: application/x-www-form-urlencoded
@@ -153,8 +155,7 @@ apiKeyId=1453a914-d498-41a9-9fed-e45f62beee47&apiKeySecret=6b099ba0-f16d-4768-9b
 {
     "isValid":true,
     "tntId":"4a9f9344-6df8-48b4-a509-32d33632a7f3",
-    "issuingGameId":"pogs",
-    "expires":"2012-09-25T05:15:02.248Z"
+    "issuingGameId":"pogs"
 }
 
 Retrieve permissions associated with a particular Access Token.
