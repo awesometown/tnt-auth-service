@@ -90,10 +90,14 @@ A future release may add the ability to create limited-scope tokens which *could
 
 # Form Parameters
 
-* `grantType` derived from OAuth grant type; currently only "authorization_code" is supported; required
-* `code` The authorization code returned from a call to the Authorization Code endpoint
+* `grantType` derived from OAuth grant type; `authorization_code` and `http://oauth.net/grant_type/assertion/saml/2.0/bearer` are accepted
+* `code` The authorization code returned from a call to the Authorization Code endpoint; required when using a grantType of `authorization_code`
+* `assertion` A base64 encoded SAML 2.0 Assertion; required when using a grantType of `http://oauth.net/grant_type/assertion/saml/2.0/bearer`
 
 --
+
+Using an Authorization Code
+
 POST /rest/v2/auth/token
 > Content-Type: application/x-www-form-urlencoded
 > Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -107,6 +111,22 @@ grantType=authorization_code&code=MDsNAsS4YwKaSS92DR4eT3mA2az2NOp0OIb9jR8iWl4=
     "refreshToken":"tGzv3JOkF0XG5Qx2TlKWIA",
     "tntId":"4a9f9344-6df8-48b4-a509-32d33632a7f3"
 }
+
+Using a SAML token
+
+POST /rest/v2/auth/token
+> Content-Type: application/x-www-form-urlencoded
+> Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+grantType=http%3A%2F%2Foauth.net%2Fgrant_type%2Fassertion%2Fsaml%2F2.0%2Fbearer&assertion=PEFzc2VydGlvbiBJc3N1ZUluc3RhbnQ[...omitted for brevity...]V0aG5TdGF0ZW1lbnQ-PC9Bc3NlcnRpb24-
+< 200
+< Content-Type: application/json
+{
+    "accessToken":"2YotnFZFEjr1zCsicMWpAA",
+    "tokenType":"bearer",
+    "expires": "2012-09-25T05:15:02.248Z",
+    "refreshToken":"tGzv3JOkF0XG5Qx2TlKWIA",
+    "tntId":"4a9f9344-6df8-48b4-a509-32d33632a7f3"
+}   
 
 --
 Verify Credentials Endpoint
