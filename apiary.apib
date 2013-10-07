@@ -288,3 +288,38 @@ Delete an existing API key. Anyone using the key will no longer be able to acces
 
 DELETE /rest/v2/games/{gameId}/apiKeys/{apiKeyId}
 < 204
+
+--
+User Management - non-final
+
+--
+Retrieve User Details
+
+GET /rest/v2/games/{gameId}/users/{tntId}
+< 200
+< Content-Type: application/json
+{
+    ...
+}
+
+Retrieve a list of a user's roles
+
+GET /rest/v2/games/{gameId}/users/{tntId}/roles
+< 200
+< Content-Type: application/json
+{
+    roles: [...]
+}
+
+Update a user's roles
+
+PUT /rest/v2/games/{gameId}/users/{tntId}/roles
+> Content-Type: application/json
+{
+    roles: [...]
+}
+< 200
+< Content-Type: application/json
+{
+    roles: [...]
+}
