@@ -347,7 +347,7 @@ POST /rest/v2/games/
   "recoveryEnabled": false,
   "active": true
 }
-< 200
+< 201
 < Content-Type: application/json
 {
     "gameId": "{gameId}",
@@ -393,9 +393,7 @@ GET /rest/v2/roledefinitions
     {
         "roleDefinitionId": "{roleDefinitionId}",
         "permissionTemplates": [
-            {
-                "templateString": "basicperm"
-            }
+            "basicperm"
         ]
     },
     ...
@@ -409,12 +407,59 @@ GET /rest/v2/roledefinitions/{roleDefinitionId}
 {
     "roleDefinitionId": "{roleDefinitionId}",
     "permissionTemplates": [
-        {
-            "templateString": "basicperm"
-        }
+        "basicperm"
     ]
 }
 
+Create a role definition.
+
+POST /rest/v2/roledefinitions
+> Content-Type: application/json
+{
+    "roleDefinitionId": "{roleDefinitionId}",
+    "permissionTemplates": [
+        "basicperm"
+    ]
+}
+< 201
+< Content-Type: application/json
+{
+    "roleDefinitionId": "{roleDefinitionId}",
+    "permissionTemplates": [
+        "basicperm"
+    ]
+}
+
+Update a role definition by roleDefinitionId.
+
+PUT /rest/v2/roledefinitions{roleDefinitionId}
+> Content-Type: application/json
+{
+    "permissionTemplates": [
+        "basicperm",
+        "other-perm"
+    ]
+}
+< 200
+< Content-Type: application/json
+{
+    "roleDefinitionId": "{roleDefinitionId}",
+    "permissionTemplates": [
+        "other-perm"
+    ]
+}
+
+Delete a role definition by roleDefinitionId.
+
+DELETE /rest/v2/roledefinitions{roleDefinitionId}
+< 204
+< Content-Type: application/json
+{
+    "roleDefinitionId": "{roleDefinitionId}",
+    "permissionTemplates": [
+        "other-perm"
+    ]
+}
 
 --
 Role Assignment Management (Non-Final)
