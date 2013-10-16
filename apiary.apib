@@ -290,36 +290,161 @@ DELETE /rest/v2/games/{gameId}/apiKeys/{apiKeyId}
 < 204
 
 --
-User Management - non-final
+Games Management (Non-Final)
+--
+
+Get a list of all games.
+GET /rest/v2/games/
+< 200
+< Content-Type: application/json
+[
+    {
+        "gameId": "{gameId}",
+        "gamePermissions": [
+            "AUTH_USER_GET_ME"
+        ],
+        "sharedSecret": "sQb8NqYfwHlawByy.....",
+        "oldSharedSecret": null,
+        "oldSharedSecretExpiresAt": null,
+        "facebookId": "123456789",
+        "nucleusRequestorId": "987654321",
+        "recoveryEnabled": false,
+        "manages": null,
+        "active": true
+    },
+    ...
+]
+
+Get a single game by id.
+
+GET /rest/v2/games/{gameId}
+< 200
+< Content-Type: application/json
+{
+    "gameId": "{gameId}",
+    "gamePermissions": [
+        "AUTH_USER_GET_ME"
+    ],
+    "sharedSecret": "sQb8NqYfwHlawByy.....",
+    "oldSharedSecret": null,
+    "oldSharedSecretExpiresAt": null,
+    "facebookId": "123456789",
+    "nucleusRequestorId": "987654321",
+    "recoveryEnabled": false,
+    "manages": null,
+    "active": true
+}
+
+Create a new game.
+
+POST /rest/v2/games/
+> Content-Type: application/json
+{
+  "gameId":"{gameId}",
+  "gamePermissions": ["AUTH_USER_GET_ME"],
+  "facebookId": "123456789",
+  "nucleusRequestorId": "987654321",
+  "recoveryEnabled": false,
+  "active": true
+}
+< 200
+< Content-Type: application/json
+{
+    "gameId": "{gameId}",
+    "gamePermissions": [
+        "AUTH_USER_GET_ME"
+    ],
+    "sharedSecret": "sQb8NqYfwHlawByy.....",
+    "oldSharedSecret": null,
+    "oldSharedSecretExpiresAt": null,
+    "facebookId": "123456789",
+    "nucleusRequestorId": "987654321",
+    "recoveryEnabled": false,
+    "manages": null,
+    "active": true
+}
 
 --
-Retrieve User Details
+User Management (Non-Final)
+--
+
+Get a user by TNT id.
 
 GET /rest/v2/games/{gameId}/users/{tntId}
 < 200
 < Content-Type: application/json
 {
-    ...
+    "tntId": "{tntId}",
+    "creationDate": "2013-10-16T12:58:49.796Z",
+    "lastLoginDate": null,
+    "banned": false
 }
 
-Retrieve a list of a user's roles
+--
+Role Definition Management (Non-Final)
+--
 
-GET /rest/v2/games/{gameId}/users/{tntId}/roles
+Get a list of role definitions.
+
+GET /rest/v2/roledefinitions
+< 200
+< Content-Type: application/json
+[
+    {
+        "roleDefinitionId": "{roleDefinitionId}",
+        "permissionTemplates": [
+            {
+                "templateString": "basicperm"
+            }
+        ]
+    },
+    ...
+]
+
+Get a role definition by id.
+
+GET /rest/v2/roledefinitions/{roleDefinitionId}
 < 200
 < Content-Type: application/json
 {
-    roles: [...]
+    "roleDefinitionId": "{roleDefinitionId}",
+    "permissionTemplates": [
+        {
+            "templateString": "basicperm"
+        }
+    ]
 }
 
-Update a user's roles
 
-PUT /rest/v2/games/{gameId}/users/{tntId}/roles
+--
+Role Assignment Management (Non-Final)
+--
+
+Get a list of role assignments by gameId and tntId.
+GET /rest/v2/games/{gameId}/users/{tntId}/roleassignments
+< 200
+< Content-Type: application/json
+{
+    "roles": [
+        "mgmt-app-basic",
+        "mgmt-app-gameadmin",
+        ...
+    ]
+}
+
+Update the list of role assignments by gameId and tntId.
+
+PUT /rest/v2/games/{gameId}/users/{tntId}/roleassignments
 > Content-Type: application/json
 {
-    roles: [...]
+    "roles":[
+        "mgmt-app-basic"
+    ]
 }
 < 200
 < Content-Type: application/json
 {
-    roles: [...]
+    "roles": [
+        "mgmt-app-basic"
+    ]
 }
