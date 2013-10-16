@@ -471,8 +471,8 @@ GET /rest/v2/games/{gameId}/users/{tntId}/roleassignments
 < Content-Type: application/json
 {
     "roles": [
-        "mgmt-app-basic",
-        "mgmt-app-gameadmin",
+        "{roleDefinitionId}",
+        "{roleDefinitionId}",
         ...
     ]
 }
@@ -483,13 +483,13 @@ PUT /rest/v2/games/{gameId}/users/{tntId}/roleassignments
 > Content-Type: application/json
 {
     "roles":[
-        "mgmt-app-basic"
+        "{roleDefinitionId}"
     ]
 }
 < 200
 < Content-Type: application/json
 {
     "roles": [
-        "mgmt-app-basic"
+        "{roleDefinitionId}"
     ]
 }
