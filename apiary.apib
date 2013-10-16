@@ -364,6 +364,54 @@ POST /rest/v2/games/
     "active": true
 }
 
+Update a game by gameId.
+
+PUT /rest/v2/games/{gameId}
+> Content-Type: application/json
+{
+  "gamePermissions": ["AUTH_USER_GET_ME"],
+  "facebookId": "123456789",
+  "nucleusRequestorId": "987654321",
+  "recoveryEnabled": false,
+  "active": true
+}
+< 200
+< Content-Type: application/json
+{
+    "gameId": "{gameId}",
+    "gamePermissions": [
+        "AUTH_USER_GET_ME"
+    ],
+    "sharedSecret": "sQb8NqYfwHlawByy.....",
+    "oldSharedSecret": null,
+    "oldSharedSecretExpiresAt": null,
+    "facebookId": "123456789",
+    "nucleusRequestorId": "987654321",
+    "recoveryEnabled": false,
+    "manages": null,
+    "active": true
+}
+
+Reset secret for a game by gameId.
+
+POST /rest/v2/games/{gameId}
+< 200
+< Content-Type: application/json
+{
+    "gameId": "{gameId}",
+    "gamePermissions": [
+        "AUTH_USER_GET_ME"
+    ],
+    "sharedSecret": "sQb8NqYfwHlawByy.....",
+    "oldSharedSecret": "65DQb8NqYfwHlawByy.....",
+    "oldSharedSecretExpiresAt": "2013-10-16T12:58:49.796Z",
+    "facebookId": "123456789",
+    "nucleusRequestorId": "987654321",
+    "recoveryEnabled": false,
+    "manages": null,
+    "active": true
+}
+
 --
 User Management (Non-Final)
 --
