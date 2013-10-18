@@ -455,7 +455,10 @@ GET /rest/v2/roledefinitions/{roleDefinitionId}
 {
     "roleDefinitionId": "{roleDefinitionId}",
     "permissionTemplates": [
-        "basicperm"
+        "game:${gameId}"
+    ],
+    "requiredSubstitutions": [
+        "gameId"
     ]
 }
 
@@ -466,7 +469,7 @@ POST /rest/v2/roledefinitions
 {
     "roleDefinitionId": "{roleDefinitionId}",
     "permissionTemplates": [
-        "basicperm"
+        "game:${gameId}"
     ]
 }
 < 201
@@ -474,7 +477,10 @@ POST /rest/v2/roledefinitions
 {
     "roleDefinitionId": "{roleDefinitionId}",
     "permissionTemplates": [
-        "basicperm"
+        "game:${gameId}"
+    ],
+    "requiredSubstitutions": [
+        "gameId"
     ]
 }
 
@@ -483,9 +489,9 @@ Update a role definition by roleDefinitionId.
 PUT /rest/v2/roledefinitions{roleDefinitionId}
 > Content-Type: application/json
 {
+    "roleDefinitionId": "{roleDefinitionId}",
     "permissionTemplates": [
-        "basicperm",
-        "other-perm"
+        "game:${gameId}:users:${tntId}"
     ]
 }
 < 200
@@ -493,7 +499,11 @@ PUT /rest/v2/roledefinitions{roleDefinitionId}
 {
     "roleDefinitionId": "{roleDefinitionId}",
     "permissionTemplates": [
-        "other-perm"
+        "game:${gameId}:users:${tntId}"
+    ],
+    "requiredSubstitutions": [
+        "gameId",
+        "tntId"
     ]
 }
 
@@ -501,13 +511,6 @@ Delete a role definition by roleDefinitionId.
 
 DELETE /rest/v2/roledefinitions{roleDefinitionId}
 < 204
-< Content-Type: application/json
-{
-    "roleDefinitionId": "{roleDefinitionId}",
-    "permissionTemplates": [
-        "other-perm"
-    ]
-}
 
 --
 Role Assignment Management (Non-Final)
@@ -518,9 +521,14 @@ GET /rest/v2/games/{gameId}/users/{tntId}/roleassignments
 < 200
 < Content-Type: application/json
 {
-    "roles": [
-        "{roleDefinitionId}",
-        "{roleDefinitionId}",
+    "roleAssignments": [
+        {
+            "roleDefinitionId": "{roleDefinitionId}",
+            "substitutions": {
+                "tntId": "2ce91fa8-d127-470e-ba4b-1798a1c4d658",
+                "gameId": "pogs"
+            }
+        }
         ...
     ]
 }
@@ -530,14 +538,28 @@ Update the list of role assignments by gameId and tntId.
 PUT /rest/v2/games/{gameId}/users/{tntId}/roleassignments
 > Content-Type: application/json
 {
-    "roles":[
-        "{roleDefinitionId}"
-    ]
+    "roleAssignments":[
+    {
+      "roleDefinitionId": "{roleDefinitionId}",
+      "substitutions": {
+        "gameId":"pogs",
+        "tntId":"2ce91fa8-d127-470e-ba4b-1798a1c4d658"
+      }
+    }
+    ...
+  ]
 }
 < 200
 < Content-Type: application/json
 {
-    "roles": [
-        "{roleDefinitionId}"
+    "roleAssignments": [
+        {
+            "roleDefinitionId": "{roleDefinitionId}",
+            "substitutions": {
+                "tntId": "2ce91fa8-d127-470e-ba4b-1798a1c4d658",
+                "gameId": "pogs"
+            }
+        }
+        ...
     ]
 }
