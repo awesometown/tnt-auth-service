@@ -512,33 +512,28 @@ GET /rest/v2/games/{gameId}/users/{tntId}/roleassignments
     ]
 }
 
-Update the list of role assignments by gameId and tntId.
+Add a role assignment by gameId and tntId
 
-PUT /rest/v2/games/{gameId}/users/{tntId}/roleassignments
+POST /rest/v2/games/{gameId}/users/{tntId}/roleassignments
 > Content-Type: application/json
 {
-    "roleAssignments":[
-    {
-      "roleDefinitionId": "{roleDefinitionId}",
-      "substitutions": {
+    "roleDefinitionId": "{roleDefinitionId}",
+    "substitutions": {
         "gameId":"pogs",
-        "tntId":"2ce91fa8-d127-470e-ba4b-1798a1c4d658"
-      }
+        "tntId":"f3787031-903b-4afe-85ac-82eaed33cc12"
     }
-    ...
-  ]
 }
-< 200
-< Content-Type: application/json
+< 201
 {
-    "roleAssignments": [
-        {
-            "roleDefinitionId": "{roleDefinitionId}",
-            "substitutions": {
-                "tntId": "2ce91fa8-d127-470e-ba4b-1798a1c4d658",
-                "gameId": "pogs"
-            }
-        }
-        ...
-    ]
+    "roleAssignmentId": "{roleAssignmentId}",
+    "roleDefinitionId": "{roleDefinitionId}",
+    "substitutions": {
+        "tntId": "f3787031-903b-4afe-85ac-82eaed33cc12",
+        "gameId": "pogs"
+    }
 }
+
+Delete a role assignment by gameId, tntId and roleAssignmentId
+
+DELETE /rest/v2/games/{gameId}/users/{tntId}/roleassignments/{roleAssignmentId}
+< 204
