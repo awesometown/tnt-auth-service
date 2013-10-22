@@ -407,6 +407,19 @@ GET /rest/v2/games/{gameId}/users/{tntId}
     "banned": false
 }
 
+Get a list of users by roleDefinitionId. 
+The list of userIds that are returned each have a role assignment for that role definition and game.
+
+GET /rest/v2/games/{gameId}/users?roleDefinitionId={roleDefinitionId}
+< 200
+< Content-Type: application/json
+{
+    "userIds": [
+        "3af040e1-0010-42e8-b2c3-2766964cf796",
+        ...
+    ]
+}
+
 --
 Role Definition Management (Non-Final)
 --
