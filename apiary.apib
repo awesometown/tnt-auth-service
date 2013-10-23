@@ -414,9 +414,20 @@ GET /rest/v2/games/{gameId}/users?roleDefinitionId={roleDefinitionId}
 < 200
 < Content-Type: application/json
 {
-    "userIds": [
-        "3af040e1-0010-42e8-b2c3-2766964cf796",
-        ...
+    "userRoleAssignments": [
+        {
+            "tntId": "3737d992-5de9-4dc3-b348-fe70b972e083",
+            "roleAssignments": [
+                {
+                    "roleAssignmentId": "{roleAssignmentId}",
+                    "roleDefinitionId": "{roleDefinitionId}",
+                    "substitutions": {
+                        "tntId": "f3787031-903b-4afe-85ac-82eaed33cc12",
+                        "gameId": "pogs"
+                    }
+                }
+            ]
+        }
     ]
 }
 
