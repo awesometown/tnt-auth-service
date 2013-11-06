@@ -23,13 +23,7 @@ Permissions are defined in a hierarchy and, where possible, map closely to an en
 
 The topmost (first) element is considered a "namespace", typically corresponding to a particular TNT service (eg. "auth" or "geoip"). Services then define meaningful hierarchies within their namespace.
 
-Permissions can contain substitutions, for example `${gameId}` or `${tntId}`. These will be filled in at runtime based on the context of a given request.
-
-## Permission Examples
-
-* `auth:token:create` - required to create an access token
-* `auth:games:${gameId}:update` - required to update a particular game; at runtime, `${gameId}` will be filled in with the game being updated and will become, eg. `auth:games:pogs:update`
-* `auth:games:${gameId}:users:${tntId}:view` - required to view a particular user; again, `${gameId}` and `${tntId}` will be filled in with specific values based on the request context
+Permissions may contain substitutions, for example `${gameId}` or `${tntId}`. These will be filled in at runtime based on the context of a given request.
 
 ---
 
