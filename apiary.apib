@@ -17,6 +17,20 @@ paramters (eg. "anonymousSecret").
 
 TNT Auth 2.0 strictly uses camelCasing for parameter naming.
 
+# Permissions
+
+Permissions are defined in a hierarchy and, where possible, map closely to an endpoint's URL structure. Levels of hierarchy are separated by colons.
+
+The topmost (first) element is considered a "namespace", typically corresponding to a particular TNT service (eg. "auth" or "geoip"). Services then define meaningful hierarchies within their namespace.
+
+Permissions can contain substitutions, for example `${gameId}` or `${tntId}`. These will be filled in at runtime based on the context of a given request.
+
+## Permission Examples
+
+* `auth:token:create` - required to create an access token
+* `auth:games:${gameId}:update` - required to update a particular game; at runtime, `${gameId}` will be filled in with the game being updated and will become, eg. `auth:games:pogs:update`
+* `auth:games:${gameId}:users:${tntId}:view` - required to view a particular user; again, `${gameId}` and `${tntId}` will be filled in with specific values based on the request context
+
 ---
 
 --
@@ -34,6 +48,10 @@ Authorization Code Endpoint
 --
 
 Request an Anonymous Authorization Code for a first time user
+
+#### Required Permissions
+* None
+
 POST /rest/v2/auth/code
 > Content-Type: application/x-www-form-urlencoded
 gameId=my-awesome-game&provider=anonymous
@@ -48,6 +66,10 @@ gameId=my-awesome-game&provider=anonymous
 }
 
 Request an Anonymous Authorization Code for a returning user
+
+#### Required Permissions
+* None
+
 POST /rest/v2/auth/code
 > Content-Type: application/x-www-form-urlencoded
 gameId=my-awesome-game&provider=anonymous&anonymousSecret=topsecret
@@ -64,6 +86,10 @@ gameId=my-awesome-game&provider=anonymous&anonymousSecret=topsecret
 Request an Authorization Code using a Facebook code.
 
 In this case, assume we've seen this user before, so `newUser` is set to `false`
+
+#### Required Permissions
+* None
+
 POST /rest/v2/auth/code
 > Content-Type: application/x-www-form-urlencoded
 gameId=my-awesome-game&provider=facebook&providerAuthCode=adsf1341v14
@@ -98,6 +124,9 @@ A future release may add the ability to create limited-scope tokens which *could
 
 Using an Authorization Code
 
+#### Required Permissions
+* `auth:authorize`
+
 POST /rest/v2/auth/token
 > Content-Type: application/x-www-form-urlencoded
 > Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -113,6 +142,9 @@ grantType=authorization_code&code=MDsNAsS4YwKaSS92DR4eT3mA2az2NOp0OIb9jR8iWl4=
 }
 
 Using a SAML token
+
+#### Required Permissions
+* `auth:authorize`
 
 POST /rest/v2/auth/token
 > Content-Type: application/x-www-form-urlencoded
@@ -138,7 +170,6 @@ credential
 
 # Form Parameters
 
-
 * `accessToken` - An accessToken to validate
 * `clientId` - The clientId portion of an API key to validate
 * `clientSecret` - The clientSecret portion of an API key to validate
@@ -148,6 +179,9 @@ Access Token will be validated.
 
 --
 Check whether a given Access Token is valid.
+
+# Required Permissions
+* `auth:validate:basic`
 
 POST /rest/v2/auth/validate
 > Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
@@ -166,6 +200,9 @@ Check whether a given API key is valid.
 
 **Note:** no value is returned for 'expires', since Api Keys don't expire.
 
+# Required Permissions
+* `auth:validate:basic`
+
 POST /rest/v2/auth/validate
 > Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 > Content-Type: application/x-www-form-urlencoded
@@ -180,9 +217,11 @@ apiKeyId=1453a914-d498-41a9-9fed-e45f62beee47&apiKeySecret=6b099ba0-f16d-4768-9b
 
 Retrieve permissions associated with a particular Access Token.
 
-This call requires the caller to present Basic credentials identifying it as a TNT service.
+This request is the same as a normal validate request, but requires an additional permission.
 
-**Note:** The representation of permissions within TNT services is under review and likely to change.
+# Required Permissions
+* `auth:validate:basic`
+* `auth:validate:detailed`
 
 POST /rest/v2/auth/validate
 > Authorization: Basic YWRtaW46YWNjZXNz
@@ -223,9 +262,15 @@ When creating an API Key, both the `apiKeyId` and `apiKeySecret` will be returne
 plaintext value is lost, a new API Key will need to be generated.
 
 An API Key can have an arbitrary text `tag` associated with it to allow it to be identified.
+
 --
 
 Retrieve a list of all API keys for a game.
+
+#### Required Permissions
+* `auth:games:${gameId}:apiKeys:view`
+
+
 GET /rest/v2/games/{gameId}/apiKeys
 < 200
 < Content-Type: application/json
@@ -253,6 +298,9 @@ GET /rest/v2/games/{gameId}/apiKeys
 Retrieve details about a particular API Key. Note that after an API key has been created, the secret portion
 of it is never returned again.
 
+#### Required Permissions
+* `auth:games:${gameId}:apiKeys:${apiKeyId}:view`
+
 GET /rest/v2/games/{gameId}/apiKeys/{apiKeyId}
 < 200
 < Content-Type: application/json
@@ -265,6 +313,10 @@ GET /rest/v2/games/{gameId}/apiKeys/{apiKeyId}
 
 Create a new API Key with a given scope (set of permissions). *Note:* the response to this request is the only time
 that the `apiKeySecret` will be provided. If you lose this value, you will need to create a new API key.
+
+#### Required Permissions
+* `auth:games:${gameId}:apiKeys:create`
+* Additionally, the set of permissions being granted to the API key must be a subset of those granted to the current user
 
 POST /rest/v2/games/{gameId}/apiKeys
 > Content-Type: application/json
@@ -286,6 +338,9 @@ POST /rest/v2/games/{gameId}/apiKeys
 
 Delete an existing API key. Anyone using the key will no longer be able to access secured resources.
 
+#### Required Permissions
+* `auth:games:${gameId}:apiKeys:${apiKeyId}:delete`
+
 DELETE /rest/v2/games/{gameId}/apiKeys/{apiKeyId}
 < 204
 
@@ -294,6 +349,10 @@ Games Management (Non-Final)
 --
 
 Get a list of all games.
+
+#### Required Permissions
+* `auth:games:view`
+
 GET /rest/v2/games/
 < 200
 < Content-Type: application/json
@@ -317,6 +376,9 @@ GET /rest/v2/games/
 
 Get a single game by id.
 
+#### Required Permissions
+* `auth:games:${gameId}:view`
+
 GET /rest/v2/games/{gameId}
 < 200
 < Content-Type: application/json
@@ -336,6 +398,9 @@ GET /rest/v2/games/{gameId}
 }
 
 Create a new game.
+
+#### Required Permissions
+* `auth:games:create`
 
 PUT /rest/v2/games/{gameId}
 > Content-Type: application/json
@@ -364,6 +429,9 @@ PUT /rest/v2/games/{gameId}
 }
 
 Update a game by gameId.
+
+#### Required Permissions
+* `auth:games:${gameId}:update`
 
 PUT /rest/v2/games/{gameId}
 > Content-Type: application/json
@@ -397,6 +465,9 @@ User Management (Non-Final)
 
 Get a user by TNT id.
 
+#### Required Permissions
+* `auth:games:${gameId}:users:${tntId}:view`
+
 GET /rest/v2/games/{gameId}/users/{tntId}
 < 200
 < Content-Type: application/json
@@ -409,6 +480,9 @@ GET /rest/v2/games/{gameId}/users/{tntId}
 
 Get a list of users by roleDefinitionId. 
 The list of userIds that are returned each have a role assignment for that role definition and game.
+
+#### Required Permissions
+* `auth:games:${gameId}:users:view`
 
 GET /rest/v2/games/{gameId}/users?roleDefinitionId={roleDefinitionId}
 < 200
@@ -437,6 +511,9 @@ Role Definition Management (Non-Final)
 
 Get a list of role definitions.
 
+#### Required Permissions
+* `auth:roledefinitions:view`
+
 GET /rest/v2/roledefinitions
 < 200
 < Content-Type: application/json
@@ -452,6 +529,9 @@ GET /rest/v2/roledefinitions
 
 Get a role definition by id.
 
+#### Required Permissions
+* `auth:roledefinitions:${roleDefinitionId}:view`
+
 GET /rest/v2/roledefinitions/{roleDefinitionId}
 < 200
 < Content-Type: application/json
@@ -466,6 +546,9 @@ GET /rest/v2/roledefinitions/{roleDefinitionId}
 }
 
 Create a role definition.
+
+#### Required Permissions
+* `auth:roledefinitions:create`
 
 POST /rest/v2/roledefinitions
 > Content-Type: application/json
@@ -488,6 +571,9 @@ POST /rest/v2/roledefinitions
 }
 
 Update a role definition by roleDefinitionId.
+
+#### Required Permissions
+* `auth:roledefinitions:${roleDefinitionId}:update`
 
 PUT /rest/v2/roledefinitions{roleDefinitionId}
 > Content-Type: application/json
@@ -512,6 +598,9 @@ PUT /rest/v2/roledefinitions{roleDefinitionId}
 
 Delete a role definition by roleDefinitionId.
 
+#### Required Permissions
+* `auth:roledefinitions:${roleDefinitionId}:delete`
+
 DELETE /rest/v2/roledefinitions{roleDefinitionId}
 < 204
 
@@ -520,6 +609,10 @@ Role Assignment Management (Non-Final)
 --
 
 Get a list of role assignments by gameId and tntId.
+
+#### Required Permissions
+* `auth:games:${gameId}:users:${tntId}:roleassignments:view`
+
 GET /rest/v2/games/{gameId}/users/{tntId}/roleassignments
 < 200
 < Content-Type: application/json
@@ -537,6 +630,10 @@ GET /rest/v2/games/{gameId}/users/{tntId}/roleassignments
 }
 
 Add a role assignment by gameId and tntId
+
+#### Required Permissions
+* `auth:games:${gameId}:users:${tntId}:roleassignments:create`
+* Additionally, the caller must already have all of the permissions the new role assignment will entail
 
 POST /rest/v2/games/{gameId}/users/{tntId}/roleassignments
 > Content-Type: application/json
@@ -558,6 +655,9 @@ POST /rest/v2/games/{gameId}/users/{tntId}/roleassignments
 }
 
 Delete a role assignment by gameId, tntId and roleAssignmentId
+
+#### Required Permissions
+* `auth:games:${gameId}:users:${tntId}:roleassignments:${roleAssignmentId}:delete`
 
 DELETE /rest/v2/games/{gameId}/users/{tntId}/roleassignments/{roleAssignmentId}
 < 204
