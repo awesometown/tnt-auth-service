@@ -569,7 +569,7 @@ Update a role definition by roleDefinitionId.
 #### Required Permissions
 * `auth:roledefinitions:${roleDefinitionId}:update`
 
-PUT /rest/v2/roledefinitions{roleDefinitionId}
+PUT /rest/v2/roledefinitions/{roleDefinitionId}
 > Content-Type: application/json
 {
     "roleDefinitionId": "{roleDefinitionId}",
@@ -595,7 +595,7 @@ Delete a role definition by roleDefinitionId.
 #### Required Permissions
 * `auth:roledefinitions:${roleDefinitionId}:delete`
 
-DELETE /rest/v2/roledefinitions{roleDefinitionId}
+DELETE /rest/v2/roledefinitions/{roleDefinitionId}
 < 204
 
 --
