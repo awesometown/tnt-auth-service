@@ -648,6 +648,22 @@ POST /rest/v2/games/{gameId}/users/{tntId}/roleassignments
     }
 }
 
+Retrieve a specific role assignment by gameId, tntId and roleAssignmentId.
+
+#### Required Permissions
+* `auth:games:${gameId}:users:${tntId}:roleassignments:${roleAssignmentId}:view`
+
+GET /rest/v2/games/{gameId}/users/{tntId}/roleassignments/{roleAssignmentId}
+< 200
+{
+    "roleAssignmentId": "{roleAssignmentId}",
+    "roleDefinitionId": "some-role-definition",
+    "substitutions": {
+        "tntId": "f3787031-903b-4afe-85ac-82eaed33cc12",
+        "gameId": "pogs"
+    }
+}
+
 Delete a role assignment by gameId, tntId and roleAssignmentId
 
 #### Required Permissions
