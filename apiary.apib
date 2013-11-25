@@ -278,13 +278,15 @@ GET /rest/v2/games/{gameId}/apiKeys
             "apiKeyId": "74d9be8f-9d18-42c6-8bc0-0041629dedd9",
             "createdAt": "2013-04-08T14:23:50.062Z",
             "scope": ["to", "be", "determined"],
-            "tag": "new tag"
+            "tag": "new tag",
+            "isEnabled": true
         },
         {
             "apiKeyId": "5db4db83-2e21-4ea1-a2aa-fcc4764a5714",
             "createdAt": "2013-04-08T14:23:28.383Z",
             "scope": ["to", "be", "determined"],
-            "tag": "some other descriptive text"
+            "tag": "some other descriptive text",
+            "isEnabled": true
         }
     ]
 }
@@ -302,7 +304,8 @@ GET /rest/v2/games/{gameId}/apiKeys/{apiKeyId}
     "apiKeyId": "74d9be8f-9d18-42c6-8bc0-0041629dedd9",
     "createdAt": "2013-04-08T14:23:50.062Z",
     "scope": ["to", "be", "determined"],
-    "tag": "new tag"
+    "tag": "new tag",
+    "isEnabled": true
 }
 
 Create a new API Key with a given scope (set of permissions). *Note:* the response to this request is the only time
@@ -325,10 +328,26 @@ POST /rest/v2/games/{gameId}/apiKeys
         "apiKeyId": "74d9be8f-9d18-42c6-8bc0-0041629dedd9",
         "createdAt": "2013-04-08T14:23:50.062Z",
         "scope": ["some", "permissions", "you", "want"],
-        "tag": "new tag"
+        "tag": "new tag",
+        "isEnabled": true
     },
     "apiKeySecret": "03320c44-c830-45f2-a6e8-892637e98b74"
 }
+
+Enable or disable an existing API key. Disabled API keys will cause an `isValid=false` result from the validation endpoint.
+
+Disabling an API key can be useful to double-check that a key is not in use before deleting it.
+
+If any fields other than `isEnabled` are specified in the body, they will be ignored.
+
+#### Required Permissions
+* `auth:games:${gameId}:apiKeys:${apiKeyId}:update`
+
+PUT /rest/v2/games/{gameId}/apiKeys/{apiKeyId}
+{
+    "isEnabled": false
+}
+< 200
 
 Delete an existing API key. Anyone using the key will no longer be able to access secured resources.
 
