@@ -491,6 +491,39 @@ GET /rest/v2/games/{gameId}/users/{tntId}
     "banned": false
 }
 
+Get a user by external accountId.
+
+GET /rest/v2/games/{gameId}/users?accountType=facebook&accountId=1234567890
+< 200
+< Content-Type: application/json
+{
+    "results": [
+        {
+            "tntId": "12354-12345-213535",
+            "creationDate": "2013-10-16T12:58:49.796Z",
+            "lastLoginDate": null,
+            "banned": false
+        }
+    ]
+}
+
+Get a set of users by multiple external accountIds.
+
+GET /rest/v2/games/{gameId}/users?accountType=facebook&accountId=123456779,23452431,1234986256
+< 200
+{
+    "results": [
+        {
+            "tntId": "12354-12345-213535",
+            "creationDate": "2013-10-16T12:58:49.796Z",
+            "lastLoginDate": null,
+            "banned": false
+        }
+    ]
+}
+
+DEPRECATED - this is a special case for the management app to find game admins; need to determine a new more explicit approach
+
 Get a list of users by roleDefinitionId. 
 The list of userIds that are returned each have a role assignment for that role definition and game.
 
@@ -674,6 +707,7 @@ Retrieve a specific role assignment by gameId, tntId and roleAssignmentId.
 
 GET /rest/v2/games/{gameId}/users/{tntId}/roleassignments/{roleAssignmentId}
 < 200
+< Content-Type: application/json
 {
     "roleAssignmentId": "{roleAssignmentId}",
     "roleDefinitionId": "some-role-definition",
@@ -689,4 +723,84 @@ Delete a role assignment by gameId, tntId and roleAssignmentId
 * `auth:games:${gameId}:users:${tntId}:roleassignments:${roleAssignmentId}:delete`
 
 DELETE /rest/v2/games/{gameId}/users/{tntId}/roleassignments/{roleAssignmentId}
+< 204
+
+--
+Account Links Management - non final
+
+Account Links allow you to manage mappings from a particular `tntId` to third-party accounts (Facebook, Origin, etc.)
+
+**Note:** To do a _reverse_ lookup (external account id -> tntId, use the appropriate User Management endpoint.
+
+--
+
+Retrieve a list of accounts linked to a particular tntId.
+
+GET /rest/v2/games/{gameId}/users/{tntId}/accounts
+< 200
+< Content-Type: application/json
+{
+    "results": [
+            {
+                "accountType": "anonymous",
+                "accountId": "{tntId}",
+                "createdAt": "2013-10-16T12:58:49.796Z"
+            },
+            {
+                "accountType": "facebook",
+                "accountId": "1234567890",
+                "createdAt": "2013-10-16T12:58:49.796Z"
+            }
+        ]
+}
+
+Retrieve a specific link.
+
+GET /rest/v2/games/{gameId}/users/{tntId}/accounts/facebook
+< 200
+< Content-Type: application/json
+{
+    "accountType": "facebook",
+    "accountId": "1234567890",
+    "createdAt": "2013-10-16T12:58:49.796Z",
+    "updatedAt": "2013-10-16T12:58:49.796Z"
+}
+
+Create a new link.
+
+Specifying `accountType` in the body is optional.
+
+PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
+{
+    "accountType": "origin",
+    "accountId": "544513451234"
+}
+< 201
+< Content-Type: application/json
+{
+    "accountType": "origin",
+    "accountId": "544513451234",
+    "createdAt": "2013-10-16T12:58:49.796Z",
+    "updatedAt": "2013-10-16T12:58:49.796Z"
+}
+
+Update an existing link.
+
+PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
+{
+    "accountType": "origin",
+    "accountId": "090987545"
+}
+< 200
+< Content-Type: application/json
+{
+    "accountType": "origin",
+    "accountId": "090987545",
+    "createdAt": "2013-10-16T12:58:49.796Z",
+    "updatedAt": "2013-10-16T16:00:00.000Z"
+}
+
+Delete a link
+
+DELETE /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
 < 204
