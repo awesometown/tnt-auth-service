@@ -491,100 +491,6 @@ GET /rest/v2/games/{gameId}/users/{tntId}
     "banned": false
 }
 
-Get a user and include links to external accounts.
-
-GET /rest/v2/games/{gameId}/users/{tntId}?include=accounts
-< 200
-< Content-Type: application/json
-{
-    "tntId": "{tntId}",
-    "creationDate": "2013-10-16T12:58:49.796Z",
-    "lastLoginDate": null,
-    "banned": false,
-    "accounts": [
-        {
-            "accountType": "anonymous",
-            "accountId": "{tntId}",
-            "createdAt": "2013-10-16T12:58:49.796Z"
-        },
-        {
-            "accountType": "facebook",
-            "accountId": "1234567890",
-            "createdAt": "2013-10-16T12:58:49.796Z"
-        }
-    ]
-}
-    
-
-Get a user by external accountId.
-
-GET /rest/v2/games/{gameId}/users?accountType=facebook&accountId=1234567890
-< 200
-< Content-Type: application/json
-{
-    "results": [
-        {
-            "tntId": "12354-12345-213535",
-            "creationDate": "2013-10-16T12:58:49.796Z",
-            "lastLoginDate": null,
-            "banned": false
-        }
-    ]
-}
-
-Get a user by external accountId (alternate proposal).
-
-GET /rest/v2/games/{gameId}/users/facebook/{accountId}
-< 200
-< Content-Type: application/json
-{
-    "results": [
-        {
-            "tntId": "12354-12345-213535",
-            "creationDate": "2013-10-16T12:58:49.796Z",
-            "lastLoginDate": null,
-            "banned": false
-        }
-    ]
-}
-
-Get a set of users by multiple external accountIds.
-
-POST /rest/v2/games/{gameId}/users/bulkLookup
-> Content-Type: application/json
-{
-    "accountType": "facebook"
-    "accountIds": ["123456", "3213123", "252342"]
-}
-< 200
-< Content-Type: application/json
-{
-    "results": [
-        {
-            "accountType": "facebook",
-            "accountId": "123456",
-            "user": {
-                "tntId": "12354-12345-213535",
-                "creationDate": "2013-10-16T12:58:49.796Z",
-                "lastLoginDate": null,
-                "banned": false
-            }
-        },
-        {
-            "accountType": "facebook",
-            "accountId": "3213123",
-            "user": {
-                "tntId": "12354-23123-568678",
-                "creationDate": "2013-10-16T12:58:49.796Z",
-                "lastLoginDate": null,
-                "banned": false
-            }
-        },
-        ...
-        
-    ]
-}
-
 DEPRECATED - this is a special case for the management app to find game admins; need to determine a new more explicit approach
 
 Get a list of users by roleDefinitionId. 
@@ -789,11 +695,19 @@ DELETE /rest/v2/games/{gameId}/users/{tntId}/roleassignments/{roleAssignmentId}
 < 204
 
 --
-Account Links Management - non final
+Account Link Management - non final
 
-Account Links allow you to manage mappings from a particular `tntId` to third-party accounts (Facebook, Origin, etc.)
+Account Links allow you to manage mappings from a particular user to accounts from multiple providers (Facebook, Origin, etc.)
 
-**Note:** To do a _reverse_ lookup (external account id -> tntId, use the appropriate User Management endpoint.
+An account link contains the following fields:
+* `tntId` - the tntId of the user this account belongs to
+* `accountType` - the type of the linked account. Currently supported: `anonymous`, `facebook`, `origin`, `googleplay`
+* `accountId` - the id of the linked account
+* `createdAt` - when this account was linked
+
+When creating or updating an account link
+* Specifying `tntId` or `accountType` in the body is optional. If they are provided, they must match the values specified in the URL.
+* Any value provided for `createdAt` will be discarded.
 
 --
 
@@ -805,11 +719,13 @@ GET /rest/v2/games/{gameId}/users/{tntId}/accounts
 {
     "results": [
             {
+                "tntId": "{tntId}"
                 "accountType": "anonymous",
                 "accountId": "{tntId}",
                 "createdAt": "2013-10-16T12:58:49.796Z"
             },
             {
+                "tntId": "{tntId}"
                 "accountType": "facebook",
                 "accountId": "1234567890",
                 "createdAt": "2013-10-16T12:58:49.796Z"
@@ -817,21 +733,19 @@ GET /rest/v2/games/{gameId}/users/{tntId}/accounts
         ]
 }
 
-Retrieve a specific link.
+Retrieve a specific account.
 
 GET /rest/v2/games/{gameId}/users/{tntId}/accounts/facebook
 < 200
 < Content-Type: application/json
 {
+    "tntId": "{tntId}",
     "accountType": "facebook",
     "accountId": "1234567890",
     "createdAt": "2013-10-16T12:58:49.796Z",
-    "updatedAt": "2013-10-16T12:58:49.796Z"
 }
 
-Create a new link.
-
-Specifying `accountType` in the body is optional.
+Link a new account.
 
 PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
 {
@@ -841,16 +755,17 @@ PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
 < 201
 < Content-Type: application/json
 {
+    "tntId": "{tntId}",
     "accountType": "origin",
     "accountId": "544513451234",
-    "createdAt": "2013-10-16T12:58:49.796Z",
-    "updatedAt": "2013-10-16T12:58:49.796Z"
+    "createdAt": "2013-10-16T12:58:49.796Z"
 }
 
 Update an existing link.
 
 PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
 {
+    "tntId": "{tntId}",
     "accountType": "origin",
     "accountId": "090987545"
 }
@@ -859,11 +774,55 @@ PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
 {
     "accountType": "origin",
     "accountId": "090987545",
-    "createdAt": "2013-10-16T12:58:49.796Z",
-    "updatedAt": "2013-10-16T16:00:00.000Z"
+    "createdAt": "2013-10-16T12:58:49.796Z"
 }
 
 Delete a link
 
 DELETE /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
 < 204
+
+Retrieve an account by its `accountId`.
+
+GET /rest/v2/games/{gameId}/accounts/facebook/12345
+< 200
+< Content-Type: application/json
+{
+    "tntId": "{tntId}",
+    "accountType": "facebook",
+    "accountId": "12345",
+    "createdAt": "2013-10-16T12:58:49.796Z"
+}
+
+Look up multiple TNT users by external accountIds.
+
+POST /rest/v2/games/{gameId}/accounts/bulklookup
+> Content-Type: application/json
+{
+    "accountType":"origin",
+    "accountIds": ["123456", "3213123", "252342"]
+}
+< 200
+< Content-Type: application/json
+{
+    "results": [
+        {
+            "tntId": "abcd-1234",
+            "accountType": "origin",
+            "accountId": "123456",
+            "createdAt": "2013-10-16T12:58:49.796Z"
+        },
+        {
+            "tntId": "dfcb-4321",
+            "accountType": "origin",
+            "accountId": "3213123",
+            "createdAt": "2013-10-16T12:58:49.796Z"
+        },
+        {
+            "tntId": "becf-9876",
+            "accountType": "origin",
+            "accountId": "252342",
+            "createdAt": "2013-10-16T12:58:49.796Z"
+        }
+    ]
+}
