@@ -700,6 +700,7 @@ Account Link Management (Non-Final)
 Account Links allow you to manage mappings from a particular user to accounts from multiple providers (Facebook, Origin, etc.)
 
 An account link contains the following fields:
+
 * `tntId` - the tntId of the user this account belongs to
 * `accountType` - the type of the linked account. Currently supported: `anonymous`, `facebook`, `origin`, `googleplay`
 * `accountId` - the id of the linked account
@@ -712,6 +713,9 @@ When creating or updating an account link
 --
 
 Retrieve a list of accounts linked to a particular tntId.
+
+#### Required Permissions
+* `auth:games:${gameId}:users:${tntId}:accounts:view`
 
 GET /rest/v2/games/{gameId}/users/{tntId}/accounts
 < 200
@@ -735,6 +739,9 @@ GET /rest/v2/games/{gameId}/users/{tntId}/accounts
 
 Retrieve a specific account.
 
+#### Required Permissions
+* `auth:games:${gameId}:users:${tntId}:accounts:view`
+
 GET /rest/v2/games/{gameId}/users/{tntId}/accounts/facebook
 < 200
 < Content-Type: application/json
@@ -746,6 +753,9 @@ GET /rest/v2/games/{gameId}/users/{tntId}/accounts/facebook
 }
 
 Link a new account.
+
+#### Required Permissions
+* `auth:games:${gameId}:users:${tntId}:accounts:create`
 
 PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
 {
@@ -763,6 +773,9 @@ PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
 
 Update an existing link.
 
+#### Required Permissions
+* `auth:games:${gameId}:users:${tntId}:accounts:update`
+
 PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
 {
     "accountType": "origin",
@@ -778,10 +791,16 @@ PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
 
 Delete a link
 
+#### Required Permissions
+* `auth:games:${gameId}:users:${tntId}:accounts:delete`
+
 DELETE /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
 < 204
 
 Retrieve an account by its `accountId`.
+
+#### Required Permissions
+* `auth:games:${gameId}:accounts:query`
 
 GET /rest/v2/games/{gameId}/accounts/facebook/12345
 < 200
@@ -794,6 +813,9 @@ GET /rest/v2/games/{gameId}/accounts/facebook/12345
 }
 
 Look up multiple accounts user by their `accountId`s.
+
+#### Required Permissions
+* `auth:games:${gameId}:accounts:query`
 
 POST /rest/v2/games/{gameId}/accounts/bulklookup
 > Content-Type: application/json
