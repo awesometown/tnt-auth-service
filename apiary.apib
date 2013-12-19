@@ -244,7 +244,7 @@ accessToken=invalidToken
 }
 
 --
-API Key Management - non final
+API Key Management (Non-Final)
 Endpoints for managing Api Keys.
 
 An API Key is effectively a username (`apiKeyId`) and password (`apiKeySecret`) associated with a set of permissions. Adhering to the
@@ -695,7 +695,7 @@ DELETE /rest/v2/games/{gameId}/users/{tntId}/roleassignments/{roleAssignmentId}
 < 204
 
 --
-Account Link Management - non final
+Account Link Management (Non-Final)
 
 Account Links allow you to manage mappings from a particular user to accounts from multiple providers (Facebook, Origin, etc.)
 
@@ -793,7 +793,7 @@ GET /rest/v2/games/{gameId}/accounts/facebook/12345
     "createdAt": "2013-10-16T12:58:49.796Z"
 }
 
-Look up multiple TNT users by external accountIds.
+Look up multiple accounts user by their `accountId`s.
 
 POST /rest/v2/games/{gameId}/accounts/bulklookup
 > Content-Type: application/json
