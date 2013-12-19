@@ -706,11 +706,6 @@ An account link contains the following fields:
 * `accountId` - the id of the linked account
 * `createdAt` - when this account was linked
 
-When creating or updating an account link
-
-* Specifying `tntId` or `accountType` in the body is optional. If they are provided, they must match the values specified in the URL.
-* Any value provided for `createdAt` will be discarded.
-
 --
 
 Retrieve a list of accounts linked to a particular tntId.
@@ -755,6 +750,11 @@ GET /rest/v2/games/{gameId}/users/{tntId}/accounts/facebook
 
 Link a new account.
 
+When creating an account link:
+
+* Specifying `tntId` or `accountType` in the body is optional. If they are provided, they must match the values specified in the URL.
+* Any value provided for `createdAt` will be ignored.
+
 #### Required Permissions
 * `auth:games:${gameId}:users:${tntId}:accounts:create`
 
@@ -769,24 +769,6 @@ PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
     "tntId": "{tntId}",
     "accountType": "origin",
     "accountId": "544513451234",
-    "createdAt": "2013-10-16T12:58:49.796Z"
-}
-
-Update an existing link.
-
-#### Required Permissions
-* `auth:games:${gameId}:users:${tntId}:accounts:update`
-
-PUT /rest/v2/games/{gameId}/users/{tntId}/accounts/origin
-{
-    "accountType": "origin",
-    "accountId": "090987545"
-}
-< 200
-< Content-Type: application/json
-{
-    "accountType": "origin",
-    "accountId": "090987545",
     "createdAt": "2013-10-16T12:58:49.796Z"
 }
 
